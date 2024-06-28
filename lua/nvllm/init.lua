@@ -6,9 +6,33 @@ local NVLLM = {
     curl = nil,
     llm_server_url = nil,
     logger = nil,
+    current_status = "uninitialized"
 }
 
+local function nvim_write(text)
+    if type(text) == "string" then
+        local text_table = {}
+        for line in text:gmatch('[^\r\n]+') do
+            table.insert(text_table, line)
+        end
+        text = text_table
+    end
+
+    vim.api.nvim_put(text, 'c', true, true)
+end
+
+function NVLLM:query(message)
+    self.logger:verbose('making query with message "' .. message .. '"')
+    -- TODO
+end
+
+function NVLLM:status()
+    return "NVLLM: " .. self.current_status
+end
+
 function NVLLM:setup(opts)
+    self.current_status = "pre-init..."
+
     local default_opts = {
         llm_server_url = 'http://localhost:8080/',
         curl_executable = 'curl',
@@ -29,6 +53,8 @@ function NVLLM:setup(opts)
         error('nvllm module setup has already been done!')
     end
 
+    self.current_status = "initializing..."
+
     self.logger = logger.new()
     self.logger:setup({
         path = opts.log_path,
@@ -46,8 +72,15 @@ function NVLLM:setup(opts)
         log_level = opts.curl_log_level,
     })
 
+    vim.api.nvim_create_user_command('NVLLMQuery', function(args)
+        self:query(args.args)
+    end, {
+        nargs = 1,
+    })
+
     self.llm_server_url = opts.llm_server_url
-    self.logger:info('NVLLM initialized, API @ ' .. self.llm_server_url)
+    self.logger:verbose('NVLLM initialized, API @ ' .. self.llm_server_url)
+    self.current_status = "initialized, API @ " .. self.llm_server_url
 end
 
 return NVLLM
