@@ -38,9 +38,9 @@ function NVLLM:setup(opts)
         curl_executable = 'curl',
         curl_default_timeout = 10000,
         curl_log_path = './nvllm.curl.log',
-        curl_log_level = logger.LOG_LEVEL_INFO,
+        curl_log_level = logger.LOG_LEVEL_WARNING,
         log_path = './nvllm.log',
-        log_level = logger.LOG_LEVEL_INFO,
+        log_level = logger.LOG_LEVEL_WARNING,
     }
 
     if opts == nil then
@@ -79,7 +79,7 @@ function NVLLM:setup(opts)
     })
 
     self.llm_server_url = opts.llm_server_url
-    self.logger:verbose('NVLLM initialized, API @ ' .. self.llm_server_url)
+    self.logger:info('NVLLM initialized, API @ ' .. self.llm_server_url)
     self.current_status = "initialized, API @ " .. self.llm_server_url
 end
 
