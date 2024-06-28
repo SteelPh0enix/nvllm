@@ -34,7 +34,8 @@ function nvllm:setup(opts)
         path = opts.log_path,
         level = opts.log_level
     })
-    self.logger:info('NVLLM setup started...')
+
+    self.logger:info('NVLLM setup started')
 
     self.curl = curl.new()
     self.curl:setup({
@@ -46,7 +47,7 @@ function nvllm:setup(opts)
     })
 
     self.llm_server_url = opts.llm_server_url
-    self.logger:info('NVLLM initialized!')
+    self.logger:info('NVLLM initialized, API @ ' .. self.llm_server_url)
 end
 
 return nvllm
