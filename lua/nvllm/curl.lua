@@ -3,7 +3,7 @@ local logger = require('nvllm.logger')
 
 local Curl = {
     curl_executable = 'curl',
-    setup_done = false,
+    id = nil,
     default_headers = {},
     default_timeout = 10000,
     logger = nil,
@@ -20,6 +20,10 @@ local function convert_http_headers_to_curl_arguments(headers)
         parsed_headers[#parsed_headers + 1] = '--header "' .. k .. ': ' .. v .. '"'
     end
     return parsed_headers
+end
+
+function Curl:_log_verbose(msg)
+    self.logger:verbose('<' .. self.id .. '> ' .. msg)
 end
 
 function Curl:_get_curl_args()
@@ -75,7 +79,7 @@ function Curl:setup(opts)
         opts = {}
     end
 
-    if self.setup_done then
+    if self.id ~= nil then
         error('curl module setup has already been done!')
     end
 
@@ -98,8 +102,8 @@ function Curl:setup(opts)
         end
     end
 
-    self.setup_done = true
-    self.logger:verbose('curl.lua initialized')
+    self.id = utils.random_id(8)
+    self:_log_verbose('curl.lua initialized with ID ' .. self.id)
 end
 
 return Curl
