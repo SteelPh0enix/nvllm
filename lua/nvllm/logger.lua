@@ -1,6 +1,6 @@
 local Logger = {
-    LOG_LEVEL_VERBOSE = 0,
-    LOG_LEVEL_DEBUG = 10,
+    LOG_LEVEL_DEBUG = 0,
+    LOG_LEVEL_VERBOSE = 10,
     LOG_LEVEL_INFO = 20,
     LOG_LEVEL_WARNING = 30,
     LOG_LEVEL_ERROR = 40,

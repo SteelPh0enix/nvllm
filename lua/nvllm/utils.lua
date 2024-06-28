@@ -48,4 +48,16 @@ function utils.random_id(length, character_set)
     return id
 end
 
+function utils.stringify_table(table)
+    if table == nil then
+        table = {}
+    end
+
+    local table_string = ''
+    for k, v in pairs(table) do
+        table_string = table_string .. k .. ': ' .. v .. ', '
+    end
+    return '{ ' .. table_string .. ' }'
+end
+
 return utils
