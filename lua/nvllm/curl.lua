@@ -10,7 +10,7 @@ local Curl = {
 }
 Curl.__index = Curl
 
-local function parse_http_headers_to_curl_arguments(headers)
+local function convert_http_headers_to_curl_arguments(headers)
     if headers == nil then
         return {}
     end
@@ -23,7 +23,7 @@ local function parse_http_headers_to_curl_arguments(headers)
 end
 
 function Curl:_get_curl_args()
-    local headers = parse_http_headers_to_curl_arguments(self.default_headers)
+    local headers = convert_http_headers_to_curl_arguments(self.default_headers)
     return utils.concat_tables({ self.curl_executable }, headers)
 end
 
@@ -40,26 +40,26 @@ function Curl:_call_curl(args, timeout)
 end
 
 function Curl:get(url, headers, timeout)
-    local headers_args = parse_http_headers_to_curl_arguments(headers)
+    local headers_args = convert_http_headers_to_curl_arguments(headers)
     local curl_args = utils.concat_tables({ '--request GET', '--url ' .. url }, headers_args)
     return self:_call_curl(curl_args, timeout)
 end
 
 function Curl:async_get(url, headers, on_exit_handler)
-    local headers_args = parse_http_headers_to_curl_arguments(headers)
+    local headers_args = convert_http_headers_to_curl_arguments(headers)
     local curl_args = utils.concat_tables({ '--request GET', '--url ' .. url }, headers_args)
     return self:_call_curl_async(curl_args, on_exit_handler)
 end
 
 function Curl:post(url, data, headers, timeout)
-    local headers_args = parse_http_headers_to_curl_arguments(headers)
+    local headers_args = convert_http_headers_to_curl_arguments(headers)
     local curl_base_args = utils.concat_tables({ '--request POST', '--url ' .. url }, headers_args)
     local curl_args = utils.concat_tables(curl_base_args, { '--data \'' .. data .. '\'' })
     return self:_call_curl(curl_args, timeout)
 end
 
 function Curl:async_post(url, data, headers, on_exit_handler)
-    local headers_args = parse_http_headers_to_curl_arguments(headers)
+    local headers_args = convert_http_headers_to_curl_arguments(headers)
     local curl_base_args = utils.concat_tables({ '--request POST', '--url ' .. url }, headers_args)
     local curl_args = utils.concat_tables(curl_base_args, { '--data \'' .. data .. '\'' })
     return self:_call_curl_async(curl_args, on_exit_handler)
