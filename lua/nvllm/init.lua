@@ -1,22 +1,21 @@
 local utils = require('nvllm.utils')
+local logger = require('nvllm.logger')
 
 local nvllm = {
     curl = nil,
-    llm_server_url = 'http://localhost:8080/',
-    log = nil,
+    llm_server_url = nil,
+    logger = nil,
 }
 
 function nvllm:setup(opts)
-    self.log = require('nvllm.log')
-
     local default_opts = {
         llm_server_url = 'http://localhost:8080/',
         curl_executable = 'curl',
         curl_default_timeout = 10000,
         curl_log_path = './nvllm.curl.log',
-        curl_log_level = self.log.LOG_LEVEL_INFO,
+        curl_log_level = logger.LOG_LEVEL_INFO,
         log_path = './nvllm.log',
-        log_level = self.log.LOG_LEVEL_INFO,
+        log_level = logger.LOG_LEVEL_INFO,
     }
 
     if opts == nil then
@@ -29,7 +28,8 @@ function nvllm:setup(opts)
         error('nvllm module setup has already been done!')
     end
 
-    self.log:setup({
+    self.logger = logger.new()
+    self.logger:setup({
         path = opts.log_path,
         level = opts.log_level
     })

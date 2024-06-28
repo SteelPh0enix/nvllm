@@ -1,11 +1,12 @@
 local utils = require('nvllm.utils')
+local logger = require('nvllm.logger')
 
 local curl = {
     curl_executable = 'curl',
     setup_done = false,
     default_headers = {},
     default_timeout = 10000,
-    log = nil,
+    logger = nil,
 }
 
 local function parse_http_headers_to_curl_arguments(headers)
@@ -83,8 +84,8 @@ function curl:setup(opts)
             self.default_timeout = v
         end
         if k == 'log_path' then
-            self.log = require('nvllm.log')
-            self.log:setup({
+            self.logger = logger.new()
+            self.logger:setup({
                 path = v,
                 level = opts["log_level"],
             })
