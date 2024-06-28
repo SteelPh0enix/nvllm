@@ -2,13 +2,13 @@ local utils = require('nvllm.utils')
 local logger = require('nvllm.logger')
 local curl = require('nvllm.curl')
 
-local nvllm = {
+local NVLLM = {
     curl = nil,
     llm_server_url = nil,
     logger = nil,
 }
 
-function nvllm:setup(opts)
+function NVLLM:setup(opts)
     local default_opts = {
         llm_server_url = 'http://localhost:8080/',
         curl_executable = 'curl',
@@ -50,4 +50,4 @@ function nvllm:setup(opts)
     self.logger:info('NVLLM initialized, API @ ' .. self.llm_server_url)
 end
 
-return nvllm
+return NVLLM
