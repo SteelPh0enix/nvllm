@@ -32,4 +32,20 @@ function utils.merge_tables(a, b)
     return result
 end
 
+function utils.random_id(length, character_set)
+    -- return a random id of defined length
+    -- id consists of lowercase ascii letters if not provided via character_set
+    if character_set == nil then
+        character_set = 'qwertyuiopasdfghjklzxcvbnm'
+    end
+
+    local id = ''
+    for _ = 1, length do
+        local index = math.random(#character_set)
+        id = id .. character_set:sub(index, index)
+    end
+
+    return id
+end
+
 return utils
