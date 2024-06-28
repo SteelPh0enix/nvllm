@@ -78,7 +78,7 @@ function Logger:_log(message, level)
     end
 
     local current_time = os.date('%Y-%m-%d %H:%M:%S')
-    self:_write(current_time .. ' [' .. log_level_to_string(self.level) .. '] ' .. message .. '\n')
+    self:_write(current_time .. ' [' .. log_level_to_string(level) .. '] ' .. message .. '\n')
 end
 
 function Logger:verbose(message)
