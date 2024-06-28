@@ -1,5 +1,6 @@
 local utils = require('nvllm.utils')
 local logger = require('nvllm.logger')
+local curl = require('nvllm.curl')
 
 local nvllm = {
     curl = nil,
@@ -33,8 +34,9 @@ function nvllm:setup(opts)
         path = opts.log_path,
         level = opts.log_level
     })
+    self.logger:info('NVLLM setup started...')
 
-    self.curl = require('nvllm.curl')
+    self.curl = curl.new()
     self.curl:setup({
         curl_executable = opts.curl_executable,
         default_headers = { ContentType = 'application/json' },
@@ -44,6 +46,7 @@ function nvllm:setup(opts)
     })
 
     self.llm_server_url = opts.llm_server_url
+    self.logger:info('NVLLM initialized!')
 end
 
 return nvllm
