@@ -126,7 +126,7 @@ function Curl.new()
 end
 
 function Curl:setup(opts)
-    if not opts then
+    if opts == nil then
         opts = {}
     end
 
