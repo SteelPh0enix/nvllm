@@ -1,6 +1,7 @@
 local logger = require('nvllm.logger')
 local utils = require('nvllm.utils')
 local curl = require('nvllm.curl')
+local json = require('nvllm.json')
 
 local Llama = {
     curl = nil,
@@ -16,9 +17,49 @@ function Llama:_get_endpoint(path)
         path = '/' .. path
     end
 
-    local final_path = self.llm_server_url .. path
+    local final_path = self.server_url .. path
     self.logger:debug('final path: ' .. final_path)
     return final_path
+end
+
+function Llama:_verify_curl_result(result)
+    if result.code ~= 0 then
+        self.logger:error('curl returned non-zero exit code: ' .. result.code)
+        return false
+    end
+    return true
+end
+
+function Llama:_get_json(path)
+    local endpoint = self:_get_endpoint(path)
+    self.logger:debug('GET: ' .. endpoint)
+    local curl_result = self.curl:get(endpoint)
+
+    if not self:_verify_curl_result(curl_result) then
+        return nil
+    end
+
+    self.logger:debug('Response: ' .. curl_result.stdout)
+    return json.decode(curl_result.stdout)
+end
+
+function Llama:_post_json(path, payload)
+    local endpoint = self:_get_endpoint(path)
+    self.logger:debug('POST: ' .. endpoint)
+    local json_string = json.encode(payload)
+    self.logger:debug('Payload: ' .. json_string)
+    local curl_result = self.curl:post(endpoint, json_string)
+
+    if not self:_verify_curl_result(curl_result) then
+        return nil
+    end
+
+    self.logger:debug('Response: ' .. curl_result.stdout)
+    return json.decode(curl_result.stdout)
+end
+
+function Llama:health()
+    return self:_get_json('/health')
 end
 
 function Llama.new()
@@ -27,7 +68,7 @@ function Llama.new()
 end
 
 function Llama:setup(opts)
-    -- duplicated from init.lua but w/e
+    -- duplicated from init.lua
     local default_opts = {
         server_url = 'http://localhost:8080',
         log_path = utils.get_plugin_logs_dir('nvllm') .. '/nvllm.llama.log',
@@ -60,12 +101,12 @@ function Llama:setup(opts)
         opts.server_url = opts.server_url:sub(1, -2)
     end
 
-    opts.curl['default_header'] = { 'Content-Type: application/json' }
+    opts.curl['default_headers'] = { 'Content-Type: application/json' }
     self.curl = curl.new()
     self.curl:setup(opts.curl)
 
     self.server_url = opts.server_url
-    self.logger:info("llama API wrapper initialized, using API @ " .. self.server_url)
+    self.logger:info('llama API wrapper initialized, using API @ ' .. self.server_url)
 end
 
 return Llama

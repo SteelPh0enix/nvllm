@@ -50,7 +50,9 @@ end
 function Curl:_call_curl_async(args, on_exit_handler)
     local curl_args = utils.concat_tables(self:_get_curl_args(), args)
     self:_log_debug('calling async ' .. table.concat(curl_args, ' '))
-    return vim.system(utils.concat_tables(curl_args, args), { text = true }, on_exit_handler)
+    local result = vim.system(utils.concat_tables(curl_args, args), { text = true }, on_exit_handler)
+    self.logger:debug('result: ' .. utils.stringify_table(result))
+    return result
 end
 
 function Curl:_call_curl(args, timeout)
@@ -60,7 +62,9 @@ function Curl:_call_curl(args, timeout)
 
     local curl_args = utils.concat_tables(self:_get_curl_args(), args)
     self:_log_debug('calling ' .. table.concat(curl_args, ' '))
-    return vim.system(curl_args, { text = true, timeout = timeout }):wait()
+    local result = vim.system(curl_args, { text = true, timeout = timeout }):wait()
+    self.logger:debug('result: ' .. utils.stringify_table(result))
+    return result
 end
 
 function Curl:get(url, headers, timeout)

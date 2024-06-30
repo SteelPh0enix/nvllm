@@ -22,6 +22,15 @@ end
 
 function NVLLM:server_health()
     self.logger:verbose('querying server for health...')
+    local health = self.llama:health()
+
+    if health == nil then
+        self.logger:error("Error - llama.cpp server is not running at specified endpoint, or curl is missing!")
+        self.current_status = 'ERROR - API unresponsive or missing curl!'
+    else
+        self.logger:debug('Health request response: ' .. utils.stringify_table(health))
+        self.current_status = 'Server ' .. health.status .. ', slots (idle/processing): ' .. health.slots_idle .. '/' .. health.slots_processing
+    end
 end
 
 function NVLLM:status()
