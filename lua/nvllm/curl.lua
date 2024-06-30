@@ -1,3 +1,6 @@
+-- see https://neovim.io/doc/user/lua.html#vim.system()
+-- for details about values returned by this module's functions
+
 local utils = require('nvllm.utils')
 local logger = require('nvllm.logger')
 
