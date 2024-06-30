@@ -60,4 +60,28 @@ function utils.stringify_table(table)
     return '{ ' .. table_string .. ' }'
 end
 
+function utils.get_plugin_logs_dir(plugin_name, makedirs)
+    if plugin_name == nil then
+        error('missing plugin name')
+    end
+
+    if makedirs == nil then
+        makedirs = true
+    end
+
+    local nvim_log_path = os.getenv('NVIM_LOG_FILE')
+    if nvim_log_path == nil then
+        error('cannot read NVIM_LOG_FILE env var!')
+    end
+
+    local last_slash_index = string.find(nvim_log_path, '/[^/]*$')
+    local logs_dir = nvim_log_path:sub(1, last_slash_index) .. plugin_name
+
+    if makedirs and not vim.loop.fs_stat(logs_dir) then
+        vim.fn.mkdir(logs_dir, 'p')
+    end
+
+    return logs_dir
+end
+
 return utils
