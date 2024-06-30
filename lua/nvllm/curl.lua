@@ -5,7 +5,7 @@ local utils = require('nvllm.utils')
 local logger = require('nvllm.logger')
 
 local Curl = {
-    curl_executable = 'curl',
+    executable = 'curl',
     id = nil,
     default_headers = {},
     default_timeout = 10000,
@@ -44,7 +44,7 @@ end
 
 function Curl:_get_curl_args()
     local headers = convert_http_headers_to_curl_arguments(self.default_headers)
-    return utils.concat_tables({ self.curl_executable }, headers)
+    return utils.concat_tables({ self.executable }, headers)
 end
 
 function Curl:_call_curl_async(args, on_exit_handler)
@@ -142,8 +142,8 @@ function Curl:setup(opts)
     end
 
     for k, v in pairs(opts) do
-        if k == 'curl_executable' then
-            self.curl_executable = v
+        if k == 'executable' then
+            self.executable = v
         end
         if k == 'default_headers' then
             self.default_headers = v
