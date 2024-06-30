@@ -27,6 +27,10 @@ function utils.merge_tables(a, b)
         if result[k] == nil then
             result[k] = v
         end
+
+        if type(result[k]) == 'table' and type(v) == 'table' then
+            result[k] = utils.merge_tables(result[k], v)
+        end
     end
 
     return result
@@ -55,6 +59,12 @@ function utils.stringify_table(table)
 
     local table_string = ''
     for k, v in pairs(table) do
+        if v == nil then
+            v = '[nil]'
+        end
+        if type(v) == 'table' then
+            v = utils.stringify_table(v)
+        end
         table_string = table_string .. k .. ': ' .. v .. ', '
     end
     return '{ ' .. table_string .. ' }'
